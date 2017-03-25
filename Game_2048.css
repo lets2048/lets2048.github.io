@@ -2,6 +2,11 @@
 		*{
 			margin: 0;
 			padding: 0;
+			font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+		}
+
+		body{
+			background-color: #faf8ef
 		}
 
 		.container{
@@ -41,9 +46,16 @@
 			display: flex;
 			flex-direction: column;
 			background-color: grey;
-			color: white;
 			padding: 5px;
 			border-radius: 4%;
+			background-color: #bbada0;
+			width: 50px;
+		}
+
+		#scoreText{
+			color: #eee4da;
+			font-size: 10px;
+			text-align: center;
 		}
 
 		.lower{
@@ -76,8 +88,10 @@
 			width: 25%;
 			border: 3px solid #bbada0;
 			background-color: #cdc1b4;
-			font-size: 80px;
+			font-size: 60px;
 			text-align: center;
+			padding-top: 10px;
+			box-sizing: border-box;
 		}
 
 		.instructions{
@@ -94,4 +108,5 @@
 
 		#points{
 			text-align: center;
+			color: white;
 		}

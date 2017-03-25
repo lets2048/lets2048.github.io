@@ -3,19 +3,12 @@ var score = 0;
 
 function main()
 { 
-	console.log("start");
+	console.log("startMain");
 
 	begin();
 	document.addEventListener('keydown', move);
 
-	
-
-
-
-
-
-
-	console.log("end");
+	console.log("endMain");
 }
 
 window.addEventListener('load', function(){
@@ -24,18 +17,19 @@ window.addEventListener('load', function(){
 
 function begin()
 {
-	
+	console.log("startBegin");
 	grid = [[' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' ']];
-	console.log(grid);
 	var row = Math.floor(Math.random() * 4);
 	var col = Math.floor(Math.random() * 4);
 	grid[row][col] = 2;
-	console.log(grid);
 	display();
+	console.log("endBegin");
 }
 
 function move(event)
 {
+	
+	console.log("startMove");
 	if(event.keyCode == 39)
 	{ moveRight();
 
@@ -52,14 +46,15 @@ function move(event)
 	{ moveDown();
 
 	} 
+	console.log("endMove");
+
 }	
 
 function moveRight()
 { 
-	console.log("right");
+	console.log("startMoveRight");
 	for(var i=0; i <= 3; i++)
-	{ console.log(i);
-	  var j=3;
+	{ var j=3;
 	  while(j>0)
 	  { 
 	  	if(grid[i][j] == ' ')
@@ -67,8 +62,7 @@ function moveRight()
 
   		}
   		else
-  		{ console.log("hey");
-  		  var k = j-1;
+  		{ var k = j-1;
   		  while(k >= 0)
   		  { if(grid[i][k] == grid[i][j])
   		  	{ grid[i][k] = ' ';
@@ -117,14 +111,16 @@ function moveRight()
 	}
 	insert()
 	display();
+	console.log("endMoveRight");
+
 }
 
 function moveLeft()
 {
-	console.log("left");
+	console.log("startMoveLeft");
 
 	for(var i=0; i <= 3; i++)
-	{ console.log(i);
+	{ 
 	  var j=0;
 	  while(j<3)
 	  { 
@@ -133,8 +129,7 @@ function moveLeft()
 
   		}
   		else
-  		{ console.log("hey");
-  		  var k = j+1;
+  		{ var k = j+1;
   		  while(k <= 3)
   		  { if(grid[i][k] == grid[i][j])
   		  	{ grid[i][k] = ' ';
@@ -184,14 +179,15 @@ function moveLeft()
 
 	insert()
 	display();
+	console.log("endMoveleft");
 	
 }
 
 function moveUp()
 {
-	console.log("up");
+	console.log("startMoveUp");
 	for(var i=0; i <= 3; i++)
-	{ console.log(i);
+	{ 
 	  var j=0;
 	  while(j<3)
 	  { 
@@ -200,8 +196,7 @@ function moveUp()
 
   		}
   		else
-  		{ console.log("hey");
-  		  var k = j+1;
+  		{ var k = j+1;
   		  while(k <= 3)
   		  { if(grid[k][i] == grid[j][i])
   		  	{ grid[k][i] = ' ';
@@ -251,14 +246,16 @@ function moveUp()
 
 	insert()
 	display();
+	console.log("endMoveUp");
+
 	
 }
 
 function moveDown()
 {
-	console.log("down");
+	console.log("startMoveDeown");
 	for(var i=0; i <= 3; i++)
-	{ console.log(i);
+	{ 
 	  var j=3;
 	  while(j>0)
 	  { 
@@ -267,8 +264,7 @@ function moveDown()
 
   		}
   		else
-  		{ console.log("hey");
-  		  var k = j-1;
+  		{ var k = j-1;
   		  while(k >= 0)
   		  { if(grid[k][i] == grid[j][i])
   		  	{ grid[k][i] = ' ';
@@ -317,11 +313,13 @@ function moveDown()
 	}
 	insert()
 	display();
+	console.log("endMoveDown");
 	
 }
 
 function insert()
 {
+	console.log("startInsert");
 	$("#points").html(score);
 	while(true)
 	{ var row = Math.floor(Math.random() * 4);
@@ -330,29 +328,18 @@ function insert()
 	  { grid[row][col] = 2;
 	  	break;
 	  } 
-	  console.log("hellow")
 	}
+	console.log("endInsert");
+
 }
 
 function display()
 {
-	console.log(grid);
-	$("#pos00").html(grid[0][0]);
-	$("#pos01").html(grid[0][1]);
-	$("#pos02").html(grid[0][2]);
-	$("#pos03").html(grid[0][3]);
-	$("#pos10").html(grid[1][0]);
-	$("#pos11").html(grid[1][1]);
-	$("#pos12").html(grid[1][2]);
-	$("#pos13").html(grid[1][3]);
-	$("#pos20").html(grid[2][0]);
-	$("#pos21").html(grid[2][1]);
-	$("#pos22").html(grid[2][2]);
-	$("#pos23").html(grid[2][3]);
-	$("#pos30").html(grid[3][0]);
-	$("#pos31").html(grid[3][1]);
-	$("#pos32").html(grid[3][2]);
-	$("#pos33").html(grid[3][3]);
+	console.log("startDisplay");
+	for(var i=0; i<=3; i++)
+	{ for(var j=0; j<=3; j++)
+		$("#pos" + i + j).html(grid[i][j]);	
+	}
 
 	for(var i=0; i<=3; i++)
 	{ for(var j=0; j<=3; j++)
@@ -379,10 +366,10 @@ function display()
 	  	else
 	  	{ $("#pos" + i + j).css("background-color", "#cdc1b4");
 	  	}
-
-
 	  }
 
 	}
+	console.log("endDisplay");
+
 }
 
