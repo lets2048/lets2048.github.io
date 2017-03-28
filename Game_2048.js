@@ -1,5 +1,6 @@
 var grid;
 var score = 0;
+var flag = true;
 
 function main()
 { 
@@ -7,6 +8,7 @@ function main()
 
 	begin();
 	document.addEventListener('keydown', move);
+	$("#newGame").click(begin);
 
 	console.log("endMain");
 }
@@ -17,18 +19,19 @@ window.addEventListener('load', function(){
 
 function begin()
 {
+	flag = true;
+	score = 0;
 	console.log("startBegin");
 	grid = [[' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' '], [ ' ', ' ', ' ', ' ']];
-	var row = Math.floor(Math.random() * 4);
-	var col = Math.floor(Math.random() * 4);
-	grid[row][col] = 2;
+	insert();
+	insert();
 	display();
 	console.log("endBegin");
 }
 
 function move(event)
 {
-	
+	flag = false;
 	console.log("startMove");
 	if(event.keyCode == 39)
 	{ moveRight();
@@ -50,66 +53,89 @@ function move(event)
 
 }	
 
+function shift(row, type)
+{	var status = false;
+	if(type == 'right')
+	{ for(var times=1; times<=3; times++)
+	  { var j = 3;
+	    while(j>0)
+	    { if(grid[row][j] == ' ' && grid[row][j-1] != ' ')
+		  { grid[row][j] = grid[row][j-1];
+		  	grid[row][j-1] = ' ';
+		  	status = true
+		  }
+		  j--;
+	    }
+	  }
+	}
+	else if(type == 'down')
+	{ for(var times=1; times<=3; times++)
+	  { var j = 3;
+	    while(j>0)
+	    { if(grid[j][row] == ' ' && grid[j-1][row] != ' ')
+		  { grid[j][row] = grid[j-1][row];
+		  	grid[j-1][row] = ' ';
+		  	status = true
+		  }
+		  j--;
+	    }
+	  }
+	}
+	else if(type == 'up')
+	{ for(var times=1; times<=3; times++)
+	  { var j = 0;
+	    while(j<3)
+	    { if(grid[j][row] == ' ' && grid[j+1][row] != ' ')
+	 	  { grid[j][row] = grid[j+1][row];
+	  	  	grid[j+1][row] = ' ';
+			status = true
+		  }
+		  j++;
+		}
+	  } 
+	}
+	else if(type == 'left')
+	{ for(var times=1; times<=3; times++)
+	  { var j = 0;
+	    while(j<3)
+	    { if(grid[row][j] == ' ' && grid[row][j+1] != ' ')
+		  { grid[row][j] = grid[row][j+1];
+		  	grid[row][j+1] = ' ';
+		  	status = true
+		  }
+		  j++;
+	    }
+	  }
+	}
+	return status
+}
+
 function moveRight()
 { 
 	console.log("startMoveRight");
-	for(var i=0; i <= 3; i++)
-	{ var j=3;
+
+	var status = false;
+	for(var i=0; i<4; i++)
+	{ if(status == false)
+	  status = shift(i, 'right');
+	  else
+	  shift(i, 'right');
+
+	  var j=3;
 	  while(j>0)
-	  { 
-	  	if(grid[i][j] == ' ')
-  		{
-
-  		}
-  		else
-  		{ var k = j-1;
-  		  while(k >= 0)
-  		  { if(grid[i][k] == grid[i][j])
-  		  	{ grid[i][k] = ' ';
-  		  	  grid[i][j] = grid[i][j] * 2;
-  		  	  score = score + grid[i][j]; 
-  		  	  break; 
-  		  	}
-  		  	else if(grid[i][k] == ' ')
-  		  	{ if(k == 0)
-  		  	  { for(var l=3; l>0; l--)
-		  	  	{ if(grid[i][l] == ' ')
-	 		      { grid[i][l] = grid[i][j];
-	 		  	    grid[i][j] = ' ';
-	 		  	    break;
-	 		      }   
-		  	    }
-  		  	  }
-  		  	  else
-  		  	  	k--;
-  		  	}
-  		  	else
-  		  	  break;
-  		  }
-  		  if(k==0 && grid[i][k] == ' ')
-  		  { for(var l=3; l>0; l--)
-		  	{ if(grid[i][l] == ' ')
-	 		  { grid[i][l] = grid[i][j];
-	 		  	grid[i][j] = ' ';
-	 		  	break;
-	 		  }  
-		  	}
-  		  }
-  		}
-  		j--;
+	  { if(grid[i][j] == grid[i][j-1] && grid[i][j] != ' ')
+ 		{ grid[i][j] *= 2;
+ 		  grid[i][j-1] = ' ';
+ 		  score = score + grid[i][j];
+ 		  status = shift(i, 'right');
+ 		}
+ 		j--;
 	  }
-	  if(j==0)
-	  { for(var l=3; l>=0; l--)
-	  	{ if(grid[i][l] == ' ')
- 		  { grid[i][l] = grid[i][j];
- 		  	grid[i][j] = ' ';
- 		  	break;
- 		  }
-	  	}
-	  }
-
 	}
+	flag = flag || status;
+	if(status)
 	insert()
+	
 	display();
 	console.log("endMoveRight");
 
@@ -119,132 +145,57 @@ function moveLeft()
 {
 	console.log("startMoveLeft");
 
-	for(var i=0; i <= 3; i++)
-	{ 
+	var status = false
+	for(var i=0; i<4; i++)
+	{ if(status == false)
+	  status = shift(i, 'left');
+	  else
+	  shift(i, 'left');
+
 	  var j=0;
 	  while(j<3)
-	  { 
-	  	if(grid[i][j] == ' ')
-  		{
-
-  		}
-  		else
-  		{ var k = j+1;
-  		  while(k <= 3)
-  		  { if(grid[i][k] == grid[i][j])
-  		  	{ grid[i][k] = ' ';
-  		  	  grid[i][j] = grid[i][j] * 2; 
-  		  	  score = score + grid[i][j];
-  		  	  break; 
-  		  	}
-  		  	else if(grid[i][k] == ' ')
-  		  	{ if(k == 3)
-  		  	  { for(var l=0; l<3; l++)
-		  	  	{ if(grid[i][l] == ' ')
-	 		      { grid[i][l] = grid[i][j];
-	 		  	    grid[i][j] = ' ';
-	 		  	    break;
-	 		      }   
-		  	    }
-  		  	  }
-  		  	  else
-  		  	  	k++;
-  		  	}
-  		  	else
-  		  	  break;
-  		  }
-  		  if(k==3 && grid[i][k] == ' ')
-  		  { for(var l=0; l<3; l++)
-		  	{ if(grid[i][l] == ' ')
-	 		  { grid[i][l] = grid[i][j];
-	 		  	grid[i][j] = ' ';
-	 		  	break;
-	 		  }  
-		  	}
-  		  }
-  		}
-  		j++;
+	  { if(grid[i][j] == grid[i][j+1] && grid[i][j] != ' ')
+ 		{ grid[i][j] *= 2;
+ 		  grid[i][j+1] = ' ';
+ 		  score = score + grid[i][j];
+ 		  status = shift(i, 'left');
+ 		}
+ 		j++;
 	  }
-	  if(j==3)
-	  { for(var l=0; l<=3; l++)
-	  	{ if(grid[i][l] == ' ')
- 		  { grid[i][l] = grid[i][j];
- 		  	grid[i][j] = ' ';
- 		  	break;
- 		  }
-	  	}
-	  }
-
 	}
-
+	flag = flag || status;
+	if(status)
 	insert()
+	
 	display();
 	console.log("endMoveleft");
-	
 }
 
 function moveUp()
 {
 	console.log("startMoveUp");
-	for(var i=0; i <= 3; i++)
-	{ 
+	var status = false
+	for(var i=0; i<4; i++)
+	{ if(status == false)
+	  status = shift(i, 'up');
+	  else
+	  shift(i, 'up');
+
 	  var j=0;
 	  while(j<3)
-	  { 
-	  	if(grid[j][i] == ' ')
-  		{
-
-  		}
-  		else
-  		{ var k = j+1;
-  		  while(k <= 3)
-  		  { if(grid[k][i] == grid[j][i])
-  		  	{ grid[k][i] = ' ';
-  		  	  grid[j][i] = grid[j][i] * 2; 
-  		  	  score = score + grid[j][i];
-  		  	  break; 
-  		  	}
-  		  	else if(grid[k][i] == ' ')
-  		  	{ if(k == 3)
-  		  	  { for(var l=0; l<3; l++)
-		  	  	{ if(grid[l][i] == ' ')
-	 		      { grid[l][i] = grid[j][i];
-	 		  	    grid[j][i] = ' ';
-	 		  	    break;
-	 		      }   
-		  	    }
-  		  	  }
-  		  	  else
-  		  	  	k++;
-  		  	}
-  		  	else
-  		  	  break;
-  		  }
-  		  if(k==3 && grid[k][i] == ' ')
-  		  { for(var l=0; l<3; l++)
-		  	{ if(grid[l][i] == ' ')
-	 		  { grid[l][i] = grid[j][i];
-	 		  	grid[j][i] = ' ';
-	 		  	break;
-	 		  }  
-		  	}
-  		  }
-  		}
-  		j++;
+	  { if(grid[j][i] == grid[j+1][i] && grid[j][i] != ' ')
+ 		{ grid[j][i] *= 2;
+ 		  grid[j+1][i] = ' ';
+ 		  score = score + grid[j][i];
+ 		  status = shift(i, 'up');
+ 		}
+ 		j++;
 	  }
-	  if(j==3)
-	  { for(var l=0; l<=3; l++)
-	  	{ if(grid[l][i] == ' ')
- 		  { grid[l][i] = grid[j][i];
- 		  	grid[j][i] = ' ';
- 		  	break;
- 		  }
-	  	}
-	  }
-
 	}
-
-	insert()
+	flag = flag || status;
+	if(status)
+	insert();
+	
 	display();
 	console.log("endMoveUp");
 
@@ -254,64 +205,31 @@ function moveUp()
 function moveDown()
 {
 	console.log("startMoveDeown");
-	for(var i=0; i <= 3; i++)
-	{ 
+	
+	var status = false
+	for(var i=0; i<4; i++)
+	{ if(status == false)
+	  status = shift(i, 'down');
+	  else
+	  shift(i, 'down');
+
 	  var j=3;
 	  while(j>0)
-	  { 
-	  	if(grid[j][i] == ' ')
-  		{
-
-  		}
-  		else
-  		{ var k = j-1;
-  		  while(k >= 0)
-  		  { if(grid[k][i] == grid[j][i])
-  		  	{ grid[k][i] = ' ';
-  		  	  grid[j][i] = grid[j][i] * 2; 
-  		  	  score = score + grid[j][i];
-  		  	  break; 
-  		  	}
-  		  	else if(grid[k][i] == ' ')
-  		  	{ if(k == 0)
-  		  	  { for(var l=3; l>0; l--)
-		  	  	{ if(grid[l][i] == ' ')
-	 		      { grid[l][i] = grid[j][i];
-	 		  	    grid[j][i] = ' ';
-	 		  	    break;
-	 		      }   
-		  	    }
-  		  	  }
-  		  	  else
-  		  	  	k--;
-  		  	}
-  		  	else
-  		  	  break;
-  		  }
-  		  if(k==0 && grid[k][i] == ' ')
-  		  { for(var l=3; l>0; l--)
-		  	{ if(grid[l][i] == ' ')
-	 		  { grid[l][i] = grid[j][i];
-	 		  	grid[j][i] = ' ';
-	 		  	break;
-	 		  }  
-		  	}
-  		  }
-  		}
-  		j--;
+	  { if(grid[j][i] == grid[j-1][i] && grid[j][i] != ' ')
+ 		{ grid[j][i] *= 2;
+ 		  grid[j-1][i] = ' ';
+ 		  score = score + grid[j][i];
+ 		  status = shift(i, 'down');
+ 		}
+ 		j--;
 	  }
-	  if(j==0)
-	  { for(var l=3; l>=0; l--)
-	  	{ if(grid[l][i] == ' ')
- 		  { grid[j][i] = grid[l][i];
- 		  	grid[j][i] = ' ';
- 		  	break;
- 		  }
-	  	}
-	  }
-
 	}
+	flag = flag || status;
+	if(status)
 	insert()
+	
+	display();
+
 	display();
 	console.log("endMoveDown");
 	
@@ -321,14 +239,19 @@ function insert()
 {
 	console.log("startInsert");
 	$("#points").html(score);
-	while(true)
-	{ var row = Math.floor(Math.random() * 4);
-	  var col = Math.floor(Math.random() * 4);
-	  if(grid[row][col] == ' ')
-	  { grid[row][col] = 2;
-	  	break;
-	  } 
+	if(flag == true)
+	{ while(true)
+	  { var row = Math.floor(Math.random() * 4);
+	    var col = Math.floor(Math.random() * 4);
+	    if(grid[row][col] == ' ')
+	    { grid[row][col] = 2;
+	   	  break;
+	    } 
+	  }
 	}
+	else
+		alert("Game Over");
+
 	console.log("endInsert");
 
 }
@@ -338,7 +261,9 @@ function display()
 	console.log("startDisplay");
 	for(var i=0; i<=3; i++)
 	{ for(var j=0; j<=3; j++)
-		$("#pos" + i + j).html(grid[i][j]);	
+		$("#pos" + i + j).html(grid[i][j]);
+		if(grid[i][j] == 2048)
+		alert("You Win")	
 	}
 
 	for(var i=0; i<=3; i++)
@@ -362,6 +287,20 @@ function display()
 	  	else if(grid[i][j] == 32)
 	  	{ $("#pos" + i + j).css("background-color", "#f77c5f");
 	  	  $("#pos" + i + j).css("color", "#f9f6f2");
+	  	}
+	  	else if(grid[i][j] == 64)
+	  	{ $("#pos" + i + j).css("background-color", "#f75f3b");
+	  	  $("#pos" + i + j).css("color", "#f9f6f2");
+	  	}
+	  	else if(grid[i][j] == 128)
+	  	{ $("#pos" + i + j).css("background-color", "#edd073");
+	  	  $("#pos" + i + j).css("color", "#f9f6f2");
+	  	  $("#pos" + i + j).css("font-size", "50px");
+	  	}
+	  	else if(grid[i][j] == 256)
+	  	{ $("#pos" + i + j).css("background-color", "#edcc62");
+	  	  $("#pos" + i + j).css("color", "#f9f6f2");
+	  	  $("#pos" + i + j).css("font-size", "50px");
 	  	}
 	  	else
 	  	{ $("#pos" + i + j).css("background-color", "#cdc1b4");
